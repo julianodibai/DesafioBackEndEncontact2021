@@ -65,6 +65,17 @@ namespace TesteBackendEnContact.Repository
 
             return result?.Export();
         }
+
+        public async Task UpdateAsync(ICompany company)
+        {
+            using var connection = new SqliteConnection(databaseConfig.ConnectionString);
+
+            var result = await connection.UpdateAsync(company);
+
+            if (result == false) throw new TaskCanceledException("Unable to update!");
+        }
+
+
     }
 
     [Table("Company")]

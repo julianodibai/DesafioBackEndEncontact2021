@@ -37,12 +37,10 @@ namespace TesteBackendEnContact.Repository
             using var connection = new SqliteConnection(databaseConfig.ConnectionString);
 
             // TODO
-            var sql = "";
+            var sql = $"DELETE FROM ContactBook WHERE Id = {id}";
 
             await connection.ExecuteAsync(sql);
         }
-
-
 
 
         public async Task<IEnumerable<IContactBook>> GetAllAsync()
@@ -68,6 +66,15 @@ namespace TesteBackendEnContact.Repository
 
             return list.ToList().Where(item => item.Id == id).FirstOrDefault();
         }
+
+        public async Task UpdateAsync (IContactBook contactBook)
+        {
+            using var connection = new SqliteConnection(databaseConfig.ConnectionString);
+
+            var result = await connection.UpdateAsync(contactBook);
+
+            if (result == false) throw new TaskCanceledException("Unable to update!");
+        }
     }
 
     [Table("ContactBook")]
@@ -84,7 +91,7 @@ namespace TesteBackendEnContact.Repository
         public ContactBookDao(IContactBook contactBook)
         {
             Id = contactBook.Id;
-            Name = Name;
+            Name = contactBook.Name;
         }
 
         public IContactBook Export() => new ContactBook(Id, Name);
